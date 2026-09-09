@@ -1,0 +1,22 @@
+name: Trigger Main Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deploy in ctri-math
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DEPLOY_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'careforknowledge',
+              repo: 'ctri-math',
+              workflow_id: 'deploy.yml',
+              ref: 'main'
+            })
