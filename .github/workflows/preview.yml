@@ -13,16 +13,17 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout main repo with submodules
+      - name: Checkout main repo
         uses: actions/checkout@v4
         with:
           repository: careforknowledge/ctri-math
           token: ${{ secrets.DEPLOY_TOKEN }}
           fetch-depth: 0
+          path: ctri-math
 
       - name: Checkout content branch into submodule
         run: |
-          cd content
+          cd ctri-math/content
           git fetch https://github.com/careforknowledge/ctri-math-content.git ${{ github.head_ref }}
           git checkout FETCH_HEAD
 
@@ -32,12 +33,15 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
+        working-directory: ctri-math
         run: npm install
 
       - name: Install Quartz plugins
+        working-directory: ctri-math
         run: npx quartz plugin install
 
       - name: Build Quartz
+        working-directory: ctri-math
         run: npx quartz build
 
       - name: Deploy Preview
@@ -46,6 +50,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: ctri-math
           command: versions upload
 
       - name: Comment Preview URL
