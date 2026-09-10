@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Topics/algebra.md",
+                "file": "Problems/waec-2010-q7.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "algebra"
+              "title": "waec-2010-q7"
             }
           }
         ]
@@ -190,14 +190,19 @@
   },
   "active": "a84cb7acfa9a8b43",
   "lastOpenFiles": [
+    "Contributors/contributor-guide.md",
+    "Contributors/terminal-path.md",
+    "Contributors/reviewer-guide.md",
+    "Contributors",
+    "New folder",
+    "Exams/waec-2010.md",
+    "Topics/algebra.md",
     "Concepts/completing-the-square.md",
     "Topics/index.md",
-    "Topics/algebra.md",
     "Topics",
     "problems/waec-2010-q7.md",
     "Problems/waec-2010-q7.md",
     "Problems",
-    "Exams/waec-2010.md",
     "Exams",
     "Concepts",
     "concepts/completing-the-square.md"
