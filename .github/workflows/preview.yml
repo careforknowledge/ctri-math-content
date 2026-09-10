@@ -20,11 +20,10 @@ jobs:
           repository: careforknowledge/ctri-math
           token: ${{ secrets.DEPLOY_TOKEN }}
           fetch-depth: 0
-          path: ctri-math
 
       - name: Checkout content branch into submodule
         run: |
-          cd ${{ github.workspace }}/ctri-math/content
+          cd ${{ github.workspace }}/content
           git fetch https://github.com/careforknowledge/ctri-math-content.git ${{ github.head_ref }}
           git checkout FETCH_HEAD
 
@@ -33,22 +32,18 @@ jobs:
         with:
           node-version: 22
 
-      - name: Debug ctri-math contents
-        working-directory: ${{ github.workspace }}/ctri-math
+      - name: Debug workspace
         run: |
-          ls
-          cat package.json | head -5
+          echo "Workspace: ${{ github.workspace }}"
+          ls ${{ github.workspace }}
 
       - name: Install dependencies
-        working-directory: ${{ github.workspace }}/ctri-math
         run: npm install
 
       - name: Install Quartz plugins
-        working-directory: ${{ github.workspace }}/ctri-math
         run: npx quartz plugin install
 
       - name: Build Quartz
-        working-directory: ${{ github.workspace }}/ctri-math
         run: npx quartz build
 
       - name: Deploy Preview
@@ -57,7 +52,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: ${{ github.workspace }}/ctri-math
           command: versions upload --preview-alias pr-${{ github.event.number }}
 
       - name: Comment Preview URL
