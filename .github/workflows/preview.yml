@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+    types: [opened, synchronize, reopened]
 
 jobs:
   preview:
@@ -23,7 +24,7 @@ jobs:
 
       - name: Checkout content branch into submodule
         run: |
-          cd ctri-math/content
+          cd ${{ github.workspace }}/ctri-math/content
           git fetch https://github.com/careforknowledge/ctri-math-content.git ${{ github.head_ref }}
           git checkout FETCH_HEAD
 
@@ -33,15 +34,15 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        working-directory: ctri-math
+        working-directory: ${{ github.workspace }}/ctri-math
         run: npm install
 
       - name: Install Quartz plugins
-        working-directory: ctri-math
+        working-directory: ${{ github.workspace }}/ctri-math
         run: npx quartz plugin install
 
       - name: Build Quartz
-        working-directory: ctri-math
+        working-directory: ${{ github.workspace }}/ctri-math
         run: npx quartz build
 
       - name: Deploy Preview
@@ -50,8 +51,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: ctri-math
-          command: versions upload
+          workingDirectory: ${{ github.workspace }}/ctri-math
+          command: versions upload --preview-alias pr-${{ github.event.number }}
 
       - name: Comment Preview URL
         uses: actions/github-script@v7
@@ -59,12 +60,33 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `${{ steps.deploy.outputs.command-output }}`;
-            const match = output.match(/https:\/\/\S+\.workers\.dev/);
-            if (match) {
+            const match = output.match(/Version Preview URL:\s*(https:\/\/\S+)/);
+            const url = match ? match[1] : null;
+
+            const body = url
+              ? `## Preview Deployment ✅\n\n**Preview URL:** ${url}\n\nThis preview updates automatically when you push new commits to this PR.`
+              : `## Preview Deployment ⚠️\n\nDeployment succeeded but preview URL could not be extracted. Check the [Actions log](https://github.com/${context.repo.owner}/${context.repo.repo}/actions) for the URL.`;
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.data.find(c => c.body.includes('Preview Deployment'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `## Preview Deployment ✅\n\nPreview URL: ${match[0]}\n\nThis reflects the content in this PR exactly as it will appear on math.ctri.ng.`
+                body,
               });
             }
