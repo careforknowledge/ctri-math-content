@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Topics/algebra.md",
+                "file": "Contributors/reviewer-guide.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "algebra"
+              "title": "reviewer-guide"
             }
           }
         ]
@@ -190,9 +190,13 @@
   },
   "active": "a84cb7acfa9a8b43",
   "lastOpenFiles": [
+    "Contributors/terminal-path.md",
+    "Contributors/contributor-guide.md",
+    "Topics/algebra.md",
+    "Contributors/reviewer-guide.md",
+    "Contributors",
     "Concepts/completing-the-square.md",
     "Topics/index.md",
-    "Topics/algebra.md",
     "Topics",
     "problems/waec-2010-q7.md",
     "Problems/waec-2010-q7.md",
