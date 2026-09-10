@@ -33,9 +33,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install dependencies
-        working-directory: ${{ github.workspace }}/ctri-math
-        run: npm install
+      - name: Debug paths
+        run: |
+          echo "Workspace: ${{ github.workspace }}"
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/ctri-math || echo "ctri-math not found"
 
       - name: Install Quartz plugins
         working-directory: ${{ github.workspace }}/ctri-math
